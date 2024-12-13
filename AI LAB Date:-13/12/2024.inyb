@@ -1,0 +1,326 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/hrishavranjan/Python-Basic-Collab-Codes/blob/main/AI%20LAB%20Date%3A-13/12/2024.inyb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from collections import deque\n",
+        "\n",
+        "def bfs_maze(maze, start, end):\n",
+        "    rows, cols = len(maze), len(maze[0])\n",
+        "    queue = deque([(start, [start])])\n",
+        "    visited = [[False for _ in range(cols)] for _ in range(rows)]\n",
+        "    nodes_explored = 0\n",
+        "\n",
+        "    while queue:\n",
+        "        (x, y), path = queue.popleft()\n",
+        "        nodes_explored += 1\n",
+        "\n",
+        "        if (x, y) == end:\n",
+        "            return path, nodes_explored\n",
+        "\n",
+        "        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n",
+        "            nx, ny = x + dx, y + dy\n",
+        "\n",
+        "            if 0 <= nx < rows and 0 <= ny < cols and maze[nx][ny] == 1 and not visited[nx][ny]:\n",
+        "                visited[nx][ny] = True\n",
+        "                queue.append(((nx, ny), path + [(nx, ny)]))\n",
+        "\n",
+        "    return [], nodes_explored\n",
+        "\n",
+        "def dfs_maze(maze, start, end):\n",
+        "    rows, cols = len(maze), len(maze[0])\n",
+        "    stack = [(start, [start])]\n",
+        "    visited = [[False for _ in range(cols)] for _ in range(rows)]\n",
+        "    nodes_explored = 0\n",
+        "    all_valid_paths = []\n",
+        "\n",
+        "    while stack:\n",
+        "        (x, y), path = stack.pop()\n",
+        "        nodes_explored += 1\n",
+        "\n",
+        "        if (x, y) == end:\n",
+        "            all_valid_paths.append(path)\n",
+        "            continue\n",
+        "\n",
+        "        if not visited[x][y]:\n",
+        "            visited[x][y] = True\n",
+        "\n",
+        "            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n",
+        "                nx, ny = x + dx, y + dy\n",
+        "\n",
+        "                if 0 <= nx < rows and 0 <= ny < cols and maze[nx][ny] == 1 and (nx, ny) not in path:\n",
+        "                    stack.append(((nx, ny), path + [(nx, ny)]))\n",
+        "\n",
+        "    return all_valid_paths, nodes_explored\n",
+        "\n",
+        "def compare_bfs_dfs(maze, start, end):\n",
+        "    bfs_path, bfs_nodes = bfs_maze(maze, start, end)\n",
+        "    dfs_paths, dfs_nodes = dfs_maze(maze, start, end)\n",
+        "\n",
+        "    print(\"BFS Shortest Path:\", bfs_path)\n",
+        "    print(\"BFS Nodes Explored:\", bfs_nodes)\n",
+        "\n",
+        "    print(\"DFS All Valid Paths:\", dfs_paths)\n",
+        "    print(\"DFS Nodes Explored:\", dfs_nodes)\n",
+        "\n",
+        "maze = [\n",
+        "    [1, 0, 1, 1, 1],\n",
+        "    [1, 1, 1, 0, 1],\n",
+        "    [0, 0, 1, 0, 1],\n",
+        "    [1, 1, 1, 1, 1],\n",
+        "    [1, 0, 0, 0, 1]\n",
+        "]\n",
+        "\n",
+        "start = (0, 0)\n",
+        "end = (4, 4)\n",
+        "\n",
+        "compare_bfs_dfs(maze, start, end)\n"
+      ],
+      "metadata": {
+        "id": "1cd-A9kiaB0w",
+        "outputId": "6b012809-337e-46fe-940d-a2f37f188f40",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "BFS Shortest Path: [(0, 0), (1, 0), (1, 1), (1, 2), (2, 2), (3, 2), (3, 3), (3, 4), (4, 4)]\n",
+            "BFS Nodes Explored: 18\n",
+            "DFS All Valid Paths: [[(0, 0), (1, 0), (1, 1), (1, 2), (2, 2), (3, 2), (3, 3), (3, 4), (4, 4)]]\n",
+            "DFS Nodes Explored: 18\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def vacuum_cleaner(location, status):\n",
+        "    locations = [\"Top\", \"Right\", \"Bottom\", \"Left\"]\n",
+        "\n",
+        "    if status == \"dirty\":\n",
+        "        return \"clean the dirty spot\"\n",
+        "    elif status == \"dirt\":\n",
+        "        return \"vacuum the dirt\"\n",
+        "\n",
+        "    for loc in locations:\n",
+        "        if loc == location:\n",
+        "            if loc == \"Top\":\n",
+        "                return vacuum_cleaner(\"Right\", \"clean\")\n",
+        "            elif loc == \"Bottom\":\n",
+        "                return vacuum_cleaner(\"Left\", \"clean\")\n",
+        "            else:\n",
+        "                return \"move forward\"\n",
+        "\n",
+        "# Example Trial\n",
+        "location = \"Top\"\n",
+        "status = \"dirt\"\n",
+        "result = vacuum_cleaner(location, status)\n",
+        "print(f\"Action: {result}\")\n"
+      ],
+      "metadata": {
+        "id": "bZk613Dfif4I",
+        "outputId": "24fb07aa-6936-4b2c-ed1a-d87590915e00",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 14,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Action: move forward\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "class VacuumCleanerIterative:\n",
+        "    def __init__(self, grid, start_x=0, start_y=0, directions=None):\n",
+        "        self.grid = grid\n",
+        "        self.rows, self.cols = len(grid), len(grid[0]) if grid else 0\n",
+        "        self.cleaned_cells = 0\n",
+        "        self.start_x = start_x\n",
+        "        self.start_y = start_y\n",
+        "        self.directions = directions if directions else [(0, 1), (1, 0), (0, -1), (-1, 0)]\n",
+        "\n",
+        "    def display_grid(self):\n",
+        "        print(\"\\n\".join(\" \".join(row) for row in self.grid), \"\\n\")\n",
+        "\n",
+        "    def clean(self, x, y):\n",
+        "        if self.grid[x][y] == \"Dirt\":\n",
+        "            self.grid[x][y] = \"Clean\"\n",
+        "            self.cleaned_cells += 1\n",
+        "            print(f\"Cell ({x}, {y}) cleaned.\")\n",
+        "\n",
+        "    def auto_clean(self):\n",
+        "        stack, visited, iteration_count = [(self.start_x, self.start_y)], set(), 0\n",
+        "        while stack:\n",
+        "            x, y = stack.pop()\n",
+        "            if (x, y) in visited or not (0 <= x < self.rows and 0 <= y < self.cols): continue\n",
+        "            visited.add((x, y))\n",
+        "            self.clean(x, y)\n",
+        "\n",
+        "            stack.extend((x + dx, y + dy) for dx, dy in self.directions)\n",
+        "            iteration_count += 1\n",
+        "        print(f\"Total iterations: {iteration_count}\")\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    grid = [[\"Dirt\", \"Clean\", \"Dirt\"], [\"Clean\", \"Dirt\", \"Clean\"], [\"Dirt\", \"Dirt\", \"Dirt\"]]\n",
+        "    vacuum = VacuumCleanerIterative(grid, start_x=1, start_y=1)\n",
+        "    print(\"Iterative Cleaning:\")\n",
+        "    vacuum.display_grid()\n",
+        "    vacuum.auto_clean()\n",
+        "    vacuum.display_grid()\n",
+        "    print(f\"Total cells cleaned: {vacuum.cleaned_cells}\")\n"
+      ],
+      "metadata": {
+        "id": "2cKJCHVZosdu",
+        "outputId": "e79e64fd-316f-4395-8e73-a4f8afa0ac2f",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 24,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Iterative Cleaning:\n",
+            "Dirt Clean Dirt\n",
+            "Clean Dirt Clean\n",
+            "Dirt Dirt Dirt \n",
+            "\n",
+            "Cell (1, 1) cleaned.\n",
+            "Cell (0, 0) cleaned.\n",
+            "Cell (2, 0) cleaned.\n",
+            "Cell (2, 1) cleaned.\n",
+            "Cell (2, 2) cleaned.\n",
+            "Cell (0, 2) cleaned.\n",
+            "Total iterations: 9\n",
+            "Clean Clean Clean\n",
+            "Clean Clean Clean\n",
+            "Clean Clean Clean \n",
+            "\n",
+            "Total cells cleaned: 6\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "class VacuumCleanerRecursive:\n",
+        "    def __init__(self, grid, start_x=0, start_y=0, directions=None):\n",
+        "        self.grid = grid\n",
+        "        self.rows, self.cols = len(grid), len(grid[0]) if grid else 0\n",
+        "        self.cleaned_cells = 0\n",
+        "        self.start_x = start_x\n",
+        "        self.start_y = start_y\n",
+        "        self.directions = directions if directions else [(0, 1), (1, 0), (0, -1), (-1, 0)]\n",
+        "\n",
+        "    def display_grid(self):\n",
+        "        print(\"\\n\".join(\" \".join(row) for row in self.grid), \"\\n\")\n",
+        "\n",
+        "    def clean(self, x, y):\n",
+        "        if self.grid[x][y] == \"Dirt\":\n",
+        "            self.grid[x][y] = \"Clean\"\n",
+        "            self.cleaned_cells += 1\n",
+        "            print(f\"Cell ({x}, {y}) cleaned.\")\n",
+        "\n",
+        "    def auto_clean_recursive(self, x, y, visited=set()):\n",
+        "        if not (0 <= x < self.rows and 0 <= y < self.cols) or (x, y) in visited: return\n",
+        "        visited.add((x, y))\n",
+        "        self.clean(x, y)\n",
+        "        for dx, dy in self.directions:\n",
+        "            self.auto_clean_recursive(x + dx, y + dy, visited)\n",
+        "\n",
+        "    def auto_clean(self):\n",
+        "        self.auto_clean_recursive(self.start_x, self.start_y)\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    grid = [[\"Dirt\", \"Clean\", \"Dirt\"], [\"Clean\", \"Dirt\", \"Clean\"], [\"Dirt\", \"Clean\", \"Dirt\"]]\n",
+        "    vacuum = VacuumCleanerRecursive(grid, start_x=1, start_y=1)\n",
+        "    print(\"Recursive Cleaning:\")\n",
+        "    vacuum.display_grid()\n",
+        "    vacuum.auto_clean()\n",
+        "    vacuum.display_grid()\n",
+        "    print(f\"Total cells cleaned: {vacuum.cleaned_cells}\")\n"
+      ],
+      "metadata": {
+        "id": "Vok4kPd0ouEy",
+        "outputId": "d22f3ccf-51cb-4253-dc49-f615c5db3cd7",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 23,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Recursive Cleaning:\n",
+            "Dirt Clean Dirt\n",
+            "Clean Dirt Clean\n",
+            "Dirt Clean Dirt \n",
+            "\n",
+            "Cell (1, 1) cleaned.\n",
+            "Cell (2, 2) cleaned.\n",
+            "Cell (2, 0) cleaned.\n",
+            "Cell (0, 0) cleaned.\n",
+            "Cell (0, 2) cleaned.\n",
+            "Clean Clean Clean\n",
+            "Clean Clean Clean\n",
+            "Clean Clean Clean \n",
+            "\n",
+            "Total cells cleaned: 5\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "k4Kz_hzfpobK"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Welcome To Colab",
+      "toc_visible": true,
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
